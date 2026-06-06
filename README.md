@@ -1,2 +1,5 @@
-# norte-financeiro-ai-agent
-Agente financeiro para acompanhamento de metas, organização de gastos e orientação personalizada.
+# Norte Financeiro
+
+Agente financeiro consultivo para acompanhamento de metas, análise de gastos e sugestões seguras com base no perfil do cliente.
+
+> Projeto em desenvolvimento.
