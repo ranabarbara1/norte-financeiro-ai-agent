@@ -1,0 +1,7 @@
+data,canal,tema,resumo,resolvido,intencao_cliente,proxima_acao_sugerida,prioridade
+2025-09-15,chat,CDB,Cliente perguntou sobre rentabilidade e prazos,sim,entender_produto,explicar liquidez e risco antes de sugerir aplicação,media
+2025-09-22,telefone,Problema no app,Erro ao visualizar extrato foi corrigido,sim,resolver_problema,confirmar se extrato voltou a aparecer normalmente,baixa
+2025-10-01,chat,Tesouro Selic,Cliente pediu explicação sobre o funcionamento do Tesouro Direto,sim,entender_produto,relacionar Tesouro Selic com reserva de emergência,media
+2025-10-12,chat,Metas financeiras,Cliente acompanhou o progresso da reserva de emergência,sim,acompanhar_meta,oferecer plano mensal para completar a reserva,alta
+2025-10-25,email,Atualização cadastral,Cliente atualizou e-mail e telefone,sim,atualizar_dados,usar app como canal preferencial de alertas,baixa
+2025-10-30,app,Alerta de gastos,Cliente recebeu alerta sobre aumento em alimentação fora de casa,sim,reduzir_gastos,sugerir limite mensal para restaurantes,media
