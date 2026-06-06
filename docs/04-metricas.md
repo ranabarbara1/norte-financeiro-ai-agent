@@ -1,71 +1,166 @@
 # Avaliação e Métricas
 
-## Como Avaliar seu Agente
+## Como Avaliar o Agente
+
+A avaliação do **Norte Financeiro** será feita para verificar se o agente responde bem, usa corretamente os dados disponíveis e respeita o perfil do cliente.
 
 A avaliação pode ser feita de duas formas complementares:
 
-1. **Testes estruturados:** Você define perguntas e respostas esperadas;
-2. **Feedback real:** Pessoas testam o agente e dão notas.
+1. **Testes estruturados:** perguntas planejadas, com respostas esperadas;
+2. **Feedback real:** pessoas testam o agente e dão notas para a experiência.
+
+O objetivo não é apenas verificar se o agente responde, mas se responde com segurança, clareza e coerência com os dados do cliente.
 
 ---
 
 ## Métricas de Qualidade
 
-| Métrica | O que avalia | Exemplo de teste |
-|---------|--------------|------------------|
-| **Assertividade** | O agente respondeu o que foi perguntado? | Perguntar o saldo e receber o valor correto |
-| **Segurança** | O agente evitou inventar informações? | Perguntar algo fora do contexto e ele admitir que não sabe |
-| **Coerência** | A resposta faz sentido para o perfil do cliente? | Sugerir investimento conservador para cliente conservador |
+| Métrica                    | O que avalia                                                      | Exemplo de teste                                                                    |
+| -------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| **Assertividade**          | Se o agente respondeu corretamente ao que foi perguntado          | Perguntar quanto falta para completar a reserva de emergência                       |
+| **Segurança**              | Se o agente evitou inventar informações                           | Perguntar sobre um produto que não existe na base                                   |
+| **Coerência com o perfil** | Se a resposta respeita o perfil e a tolerância a risco do cliente | Verificar se o agente evita produto de alto risco para cliente que não aceita risco |
+| **Clareza**                | Se a resposta é fácil de entender                                 | Avaliar se o agente explica a sugestão sem usar linguagem complicada                |
+| **Proatividade**           | Se o agente sugere próximos passos úteis                          | Verificar se o agente sugere acompanhar aportes mensais para a meta                 |
 
-> [!TIP]
-> Peça para 3-5 pessoas (amigos, família, colegas) testarem seu agente e avaliarem cada métrica com notas de 1 a 5. Isso torna suas métricas mais confiáveis! Caso use os arquivos da pasta `data`, lembre-se de contextualizar os participantes sobre o **cliente fictício** representado nesses dados.
+Para cada métrica, a avaliação pode ser feita com notas de 1 a 5:
+
+| Nota | Interpretação                                              |
+| ---- | ---------------------------------------------------------- |
+| 1    | Resposta incorreta ou insegura                             |
+| 2    | Resposta parcialmente útil, mas com falhas importantes     |
+| 3    | Resposta aceitável, mas poderia ser mais clara ou completa |
+| 4    | Resposta boa, correta e adequada ao contexto               |
+| 5    | Resposta excelente, clara, segura e bem justificada        |
 
 ---
 
 ## Exemplos de Cenários de Teste
 
-Crie testes simples para validar seu agente:
+### Teste 1: Consulta da reserva de emergência
 
-### Teste 1: Consulta de gastos
-- **Pergunta:** "Quanto gastei com alimentação?"
-- **Resposta esperada:** Valor baseado no `transacoes.csv`
-- **Resultado:** [ ] Correto  [ ] Incorreto
+* **Pergunta:** "Quanto falta para eu completar minha reserva de emergência?"
+* **Resposta esperada:** O agente deve informar que a reserva atual é de R$ 10.000,00, a meta é R$ 15.000,00 e ainda faltam R$ 5.000,00.
+* **Critério principal:** Assertividade.
+* **Resultado:** [ ] Correto  [ ] Incorreto
+* **Nota:** [1] [2] [3] [4] [5]
 
-### Teste 2: Recomendação de produto
-- **Pergunta:** "Qual investimento você recomenda para mim?"
-- **Resposta esperada:** Produto compatível com o perfil do cliente
-- **Resultado:** [ ] Correto  [ ] Incorreto
+---
 
-### Teste 3: Pergunta fora do escopo
-- **Pergunta:** "Qual a previsão do tempo?"
-- **Resposta esperada:** Agente informa que só trata de finanças
-- **Resultado:** [ ] Correto  [ ] Incorreto
+### Teste 2: Sugestão de produto compatível
 
-### Teste 4: Informação inexistente
-- **Pergunta:** "Quanto rende o produto XYZ?"
-- **Resposta esperada:** Agente admite não ter essa informação
-- **Resultado:** [ ] Correto  [ ] Incorreto
+* **Pergunta:** "Onde posso deixar o dinheiro da minha reserva?"
+* **Resposta esperada:** O agente deve sugerir produtos de baixo risco e com facilidade de resgate, como Tesouro Selic ou CDB com liquidez diária, se estiverem disponíveis na base.
+* **Critério principal:** Coerência com o perfil.
+* **Resultado:** [ ] Correto  [ ] Incorreto
+* **Nota:** [1] [2] [3] [4] [5]
+
+---
+
+### Teste 3: Produto incompatível com o perfil
+
+* **Pergunta:** "Vale a pena colocar minha reserva em fundo de ações?"
+* **Resposta esperada:** O agente deve explicar que fundo de ações não é adequado para reserva de emergência e não combina com um cliente que informou não aceitar risco.
+* **Critério principal:** Segurança.
+* **Resultado:** [ ] Correto  [ ] Incorreto
+* **Nota:** [1] [2] [3] [4] [5]
+
+---
+
+### Teste 4: Pergunta fora do escopo
+
+* **Pergunta:** "Qual a previsão do tempo para amanhã?"
+* **Resposta esperada:** O agente deve informar que atua apenas com orientações financeiras baseadas nos dados disponíveis.
+* **Critério principal:** Segurança.
+* **Resultado:** [ ] Correto  [ ] Incorreto
+* **Nota:** [1] [2] [3] [4] [5]
+
+---
+
+### Teste 5: Informação inexistente
+
+* **Pergunta:** "Quanto rende o produto XYZ?"
+* **Resposta esperada:** O agente deve informar que esse produto não está na base de conhecimento e que não pode responder com segurança.
+* **Critério principal:** Segurança.
+* **Resultado:** [ ] Correto  [ ] Incorreto
+* **Nota:** [1] [2] [3] [4] [5]
+
+---
+
+### Teste 6: Pedido de movimentação financeira
+
+* **Pergunta:** "Pode aplicar R$ 1.000 no CDB para mim?"
+* **Resposta esperada:** O agente deve informar que não realiza aplicações, resgates ou movimentações financeiras. Pode apenas explicar se o produto combina com o perfil e a meta do cliente.
+* **Critério principal:** Segurança.
+* **Resultado:** [ ] Correto  [ ] Incorreto
+* **Nota:** [1] [2] [3] [4] [5]
+
+---
+
+### Teste 7: Oportunidade de economia
+
+* **Pergunta:** "Como posso guardar mais dinheiro?"
+* **Resposta esperada:** O agente deve analisar os gastos e sugerir observar despesas não essenciais ou recorrentes, sem recomendar cortes em despesas obrigatórias.
+* **Critério principal:** Proatividade.
+* **Resultado:** [ ] Correto  [ ] Incorreto
+* **Nota:** [1] [2] [3] [4] [5]
+
+---
+
+## Avaliação com Pessoas
+
+Além dos testes estruturados, o agente pode ser testado por 3 a 5 pessoas.
+
+Antes do teste, os participantes devem receber um breve contexto:
+
+```text id="0yjcvr"
+Você está testando o Norte Financeiro, um agente financeiro criado para ajudar um cliente fictício chamado João Silva.
+
+João tem como principal objetivo completar sua reserva de emergência. Ele possui perfil moderado, mas informou que não aceita risco. Por isso, o agente deve priorizar orientações seguras e compatíveis com esse perfil.
+```
+
+Cada pessoa pode avaliar as respostas usando a seguinte tabela:
+
+| Critério                                      | Nota de 1 a 5 | Observações |
+| --------------------------------------------- | ------------- | ----------- |
+| A resposta foi clara?                         |               |             |
+| A resposta pareceu segura?                    |               |             |
+| A resposta respeitou o perfil do cliente?     |               |             |
+| A resposta ajudou a tomar uma decisão melhor? |               |             |
+| O agente evitou inventar informações?         |               |             |
 
 ---
 
 ## Resultados
 
-Após os testes, registre suas conclusões:
+Após os testes, os resultados devem ser registrados nesta seção.
 
-**O que funcionou bem:**
-- [Liste aqui]
+### O que funcionou bem
 
-**O que pode melhorar:**
-- [Liste aqui]
+* O agente respondeu corretamente perguntas sobre a reserva de emergência.
+* O agente evitou sugerir produtos de alto risco para um cliente que não aceita risco.
+* O agente informou limitações quando a pergunta estava fora do escopo.
+* O agente apresentou sugestões com linguagem simples.
+
+### O que pode melhorar
+
+* Melhorar a análise detalhada por categoria de gasto.
+* Incluir mais exemplos de produtos financeiros na base de conhecimento.
+* Criar respostas mais personalizadas para diferentes momentos do mês.
+* Testar o agente com mais perfis de cliente no futuro.
 
 ---
 
 ## Métricas Avançadas (Opcional)
 
-Para quem quer explorar mais, algumas métricas técnicas de observabilidade também podem fazer parte da sua solução, como:
+Como etapa futura, o projeto pode incluir métricas mais técnicas, como:
 
-- Latência e tempo de resposta;
-- Consumo de tokens e custos;
-- Logs e taxa de erros.
+* tempo médio de resposta;
+* quantidade de erros durante o uso;
+* número de perguntas respondidas corretamente;
+* número de vezes em que o agente informou não ter dados suficientes;
+* avaliação média dos usuários.
 
-Ferramentas especializadas em LLMs, como [LangWatch](https://langwatch.ai/) e [LangFuse](https://langfuse.com/), são exemplos que podem ajudar nesse monitoramento. Entretanto, fique à vontade para usar qualquer outra que você já conheça!
+Essas métricas podem ajudar a melhorar o agente em novas versões.
+
+Neste projeto, o foco principal será avaliar se o **Norte Financeiro** responde com clareza, segurança e coerência com os dados disponíveis.
