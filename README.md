@@ -67,6 +67,10 @@ norte-financeiro-ai-agent/
 ├── assets/
 │   ├── favicon.png
 │   └── logo.png
+│   └── problema.png
+│   └── solucao.png
+│   └── impacto.png
+│   └── demo.gif
 │
 ├── data/
 │   ├── perfil_investidor.json
