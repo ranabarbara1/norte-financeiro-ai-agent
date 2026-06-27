@@ -16,6 +16,8 @@ from typing import Any
 import pandas as pd
 import requests
 
+import unicodedata
+
 from config import (
     PERFIL_PATH,
     PRODUTOS_PATH,
@@ -121,8 +123,10 @@ TERMOS_FORA_DO_ESCOPO = [
 
 
 def normalizar_texto(valor: Any) -> str:
-    """Normaliza valores para comparação textual simples."""
-    return str(valor or "").strip().lower()
+    texto = str(valor or "").strip().lower()
+    texto = unicodedata.normalize("NFKD", texto)
+    texto = "".join(c for c in texto if not unicodedata.combining(c))
+    return texto
 
 
 def contem(pergunta: str, termos: list[str]) -> bool:
@@ -131,17 +135,21 @@ def contem(pergunta: str, termos: list[str]) -> bool:
 
 
 def formatar_moeda(valor: Any) -> str:
-    """Formata valores no padrão brasileiro, escapando o cifrão para o Streamlit."""
+    """Formata valores no padrão brasileiro (R$ 1.234,56)."""
     try:
+        valor = float(valor)
+
         valor_formatado = (
-            f"R$ {float(valor):,.2f}"
+            f"R$ {valor:,.2f}"
             .replace(",", "X")
             .replace(".", ",")
             .replace("X", ".")
         )
-        return valor_formatado.replace("$", "\\$")
+
+        return valor_formatado
+
     except Exception:
-        return "R\\$ 0,00"
+        return "R$ 0,00"
 
 
 def formatar_texto_base(valor: Any) -> str:
@@ -515,6 +523,156 @@ def responder_seguranca(pergunta):
             "Não posso realizar aplicações, resgates ou transferências. "
             "Posso apenas explicar se um produto combina com seu perfil e sua meta. "
             "A decisão e a execução devem ser feitas por você nos canais oficiais da instituição financeira."
+        )
+
+    return None
+
+def responder_cumprimentos(pergunta):
+    """Responde interações básicas de conversa."""
+
+    if contem(pergunta, [
+        "oi",
+        "olá",
+        "ola",
+        "bom dia",
+        "boa tarde",
+        "boa noite",
+        "e aí",
+        "eai",
+        "tudo bem",
+    ]):
+        return (
+            "Olá! Sou o Norte Financeiro. 😊\n\n"
+            "Posso ajudar com sua reserva de emergência, "
+            "metas financeiras, análise de gastos e produtos "
+            "disponíveis no projeto."
+        )
+
+    if contem(pergunta, [
+        "teste",
+        "testando",
+        "funciona",
+        "funcionando",
+        "teste de sistema",
+    ]):
+        return (
+            "Teste realizado com sucesso! ✅\n\n"
+            "O assistente está funcionando corretamente "
+            "e pronto para responder dúvidas financeiras."
+        )
+
+    if contem(pergunta, [
+        "quem é você",
+        "quem e voce",
+        "o que é você",
+        "oque e voce",
+        "como funciona",
+        "qual sua função",
+        "qual sua funcao",
+    ]):
+        return (
+            "Sou o Norte Financeiro, um agente financeiro consultivo.\n\n"
+            "Minha função é ajudar a interpretar informações do projeto, "
+            "acompanhar reserva de emergência, analisar gastos, "
+            "avaliar metas financeiras e apresentar produtos compatíveis "
+            "com o perfil do cliente."
+        )
+
+    if contem(pergunta, [
+        "ajuda",
+        "preciso de ajuda",
+        "me ajuda",
+        "pode ajudar",
+    ]):
+        return (
+            "Claro! Posso ajudar com:\n\n"
+            "- acompanhamento da reserva de emergência;\n"
+            "- análise de gastos;\n"
+            "- metas financeiras;\n"
+            "- informações sobre produtos disponíveis no projeto.\n\n"
+            "Você pode perguntar, por exemplo:\n"
+            "- Quanto falta para minha reserva?\n"
+            "- Como posso guardar mais dinheiro?"
+        )
+
+    if contem(pergunta, [
+        "não entendi",
+        "nao entendi",
+        "não entendi nada",
+        "nao entendi nada",
+        "explique melhor",
+        "explica melhor",
+    ]):
+        return (
+            "Sem problemas. Vou tentar explicar de outra forma.\n\n"
+            "Posso responder perguntas sobre suas informações financeiras "
+            "disponíveis no projeto, como reserva, gastos, metas e produtos."
+        )
+
+    if contem(pergunta, [
+    "obrigado",
+    "obrigada",
+    "agradeço",
+    "agradeco",
+    "valeu",
+    "vlw",
+    "valew",
+    "brigado",
+    "brigada",
+    "obg",
+    "obgda",
+    "obrigadão",
+    "obrigadao",
+    "muito obrigado",
+    "muito obrigada",
+]):
+        return (
+            "Por nada! 😊\n\n"
+            "Sempre que precisar, posso ajudar com suas dúvidas financeiras."
+        )
+
+    return None
+
+def responder_mensagens_curta(pergunta):
+    """Trata mensagens sem contexto ou muito curtas."""
+
+    pergunta_limpa = pergunta.strip()
+
+    if not pergunta_limpa:
+        return (
+            "Não consegui identificar uma pergunta.\n\n"
+            "Digite uma dúvida sobre reserva de emergência, "
+            "gastos, metas financeiras ou produtos disponíveis."
+        )
+
+    if pergunta_limpa in [
+        "?",
+        "...",
+        "..",
+        "???",
+        "kkkk",
+        "kkk",
+        "haha",
+        "oii",
+        "oiiii",
+        "ola :)",
+        "olá :)",
+    ]:
+        return (
+            "Olá! 😊\n\n"
+            "Estou aqui para ajudar com informações financeiras "
+            "do projeto.\n\n"
+            "Você pode perguntar, por exemplo:\n"
+            "- Quanto falta para minha reserva?\n"
+            "- Como posso economizar mais?\n"
+            "- Qual produto combina com minha reserva?"
+        )
+
+    # mensagens com apenas 1 ou 2 caracteres
+    if len(pergunta_limpa) <= 2:
+        return (
+            "Não consegui entender sua mensagem.\n\n"
+            "Pode escrever sua dúvida de outra forma?"
         )
 
     return None
@@ -1081,7 +1239,7 @@ def responder_transacoes(pergunta, transacoes):
     if contem(pergunta, ["total de saídas", "total de saidas", "minhas saídas", "minhas saidas", "quanto saiu"]):
         return resposta_total_por_tipo(transacoes, "saida", "saídas")
 
-    if contem(pergunta, ["saldo aproximado", "saldo do período", "saldo do periodo"]):
+    if "saldo" in pergunta and ("periodo" in pergunta or "período" in pergunta):
         df = preparar_transacoes(transacoes)
         entradas = df[df["tipo"] == "entrada"]["valor"].sum()
         saidas = df[df["tipo"] == "saida"]["valor"].sum()
@@ -1162,7 +1320,14 @@ def responder_transacoes(pergunta, transacoes):
 
         return "\n".join(resposta)
 
-    if contem(pergunta, ["em qual mês eu gastei mais", "em qual mes eu gastei mais", "mês que gastei mais", "mes que gastei mais"]):
+    if contem(pergunta, [
+    "em qual mês gastei mais",
+    "em qual mes gastei mais",
+    "mês que gastei mais",
+    "mes que gastei mais",
+    "qual mês gastei mais",
+    "qual mes gastei mais",
+    ]):
         df = preparar_transacoes(transacoes)
         df["data"] = pd.to_datetime(df["data"], errors="coerce")
         saidas = df[df["tipo"] == "saida"].copy()
@@ -1263,13 +1428,26 @@ def responder_reserva(pergunta, perfil):
 
 
 def responder_gastos_generico(pergunta, transacoes, valor_faltante):
-    """Resposta geral sobre economia e análise de gastos."""
-    if any(termo in pergunta for termo in ["guardar mais", "economizar", "gastos", "gastei", "despesas"]):
-        if "essencial" not in transacoes.columns:
-            return (
-                "Uma forma de guardar mais dinheiro é revisar gastos não essenciais e recorrentes. "
-                "No entanto, não encontrei a coluna de essencialidade nas transações para detalhar esses gastos."
-            )
+
+    termos_gastos = [
+        "gasto",
+        "gastos",
+        "despesa",
+        "despesas",
+        "economizar",
+        "economia",
+        "guardar dinheiro",
+        "guardar",
+        "reduzir gastos",
+        "cortar gastos",
+        "onde estou gastando mais",
+        "onde eu estou gastando mais",
+        "onde gasto mais",
+        "maiores gastos",
+    ]
+
+    if not contem(pergunta, termos_gastos):
+        return None
 
     df = transacoes.copy()
 
@@ -1338,15 +1516,23 @@ def resposta_demonstrativa(
     produtos_reserva = buscar_produtos_para_reserva(produtos)
 
     grupos_de_regras = [
-        lambda: responder_historico(pergunta_normalizada, atendimentos),
-        lambda: responder_seguranca(pergunta_normalizada),
-        lambda: responder_produtos(pergunta_normalizada, produtos, produtos_reserva),
-        lambda: responder_perfil(pergunta_normalizada, perfil),
-        lambda: responder_metas(pergunta_normalizada, perfil),
-        lambda: responder_transacoes(pergunta_normalizada, transacoes),
-        lambda: responder_reserva(pergunta_normalizada, perfil),
-        lambda: responder_gastos_generico(pergunta_normalizada, transacoes, valor_faltante),
-    ]
+    lambda: responder_seguranca(pergunta_normalizada),
+
+    # intenções estruturadas (dados analíticos)
+    lambda: responder_transacoes(pergunta_normalizada, transacoes),
+    lambda: responder_metas(pergunta_normalizada, perfil),
+    lambda: responder_reserva(pergunta_normalizada, perfil),
+    lambda: responder_produtos(pergunta_normalizada, produtos, produtos_reserva),
+    lambda: responder_perfil(pergunta_normalizada, perfil),
+    lambda: responder_historico(pergunta_normalizada, atendimentos),
+
+    # interações sociais (baixa prioridade)
+    lambda: responder_cumprimentos(pergunta_normalizada),
+    lambda: responder_mensagens_curta(pergunta_normalizada),
+
+    # fallback inteligente de gastos (quase último)
+    lambda: responder_gastos_generico(pergunta_normalizada, transacoes, valor_faltante),
+]
 
     for regra in grupos_de_regras:
         resposta = regra()
